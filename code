@@ -1,0 +1,73 @@
+// Motor pins
+int motorLeft1 = 6;
+int motorLeft2 = 7;
+int motorRight1 = 8;
+int motorRight2 = 9;
+
+// Ultrasonic pins
+int trigPin = 10;
+int echoPin = 11;
+long duration;
+int distance;
+
+void setup() {
+  // Motor pins
+  pinMode(motorLeft1, OUTPUT);
+  pinMode(motorLeft2, OUTPUT);
+  pinMode(motorRight1, OUTPUT);
+  pinMode(motorRight2, OUTPUT);
+
+  // Sensor pins
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+  Serial.begin(9600);
+}
+
+void loop() {
+  distance = getDistance();
+
+  if(distance < 20) {   // Obstacle detected
+    stopMotors();
+    delay(200);
+    turnRight();
+    delay(500);
+  } else {
+    forward();
+  }
+
+  delay(100);
+}
+
+// Function to read ultrasonic distance
+int getDistance() {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  return duration * 0.034 / 2;
+}
+
+// Motor control functions
+void forward() {
+  digitalWrite(motorLeft1, HIGH);
+  digitalWrite(motorLeft2, LOW);
+  digitalWrite(motorRight1, HIGH);
+  digitalWrite(motorRight2, LOW);
+}
+
+void stopMotors() {
+  digitalWrite(motorLeft1, LOW);
+  digitalWrite(motorLeft2, LOW);
+  digitalWrite(motorRight1, LOW);
+  digitalWrite(motorRight2, LOW);
+}
+
+void turnRight() {
+  digitalWrite(motorLeft1, HIGH);
+  digitalWrite(motorLeft2, LOW);
+  digitalWrite(motorRight1, LOW);
+  digitalWrite(motorRight2, HIGH);
+}
